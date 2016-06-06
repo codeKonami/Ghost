@@ -16,11 +16,11 @@ function renderChannel(req, res, next) {
         slugParam = req.params.slug ? safeString(req.params.slug) : undefined;
 
     // Ensure we at least have an empty object for postOptions
+    channelOpts.postOptions = {'filter': {'language':req.lang}};
     channelOpts.postOptions = channelOpts.postOptions || {};
     // Set page on postOptions for the query made later
     channelOpts.postOptions.page = pageParam;
     channelOpts.slugParam = slugParam;
-
     // Call fetchData to get everything we need from the API
     return fetchData(channelOpts).then(function handleResult(result) {
         // If page is greater than number of pages we have, go straight to 404

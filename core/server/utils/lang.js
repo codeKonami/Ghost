@@ -5,7 +5,6 @@ var express = require('express'),
     config = require('../config');
 
 router.use(function(req, res, next) {
-  console.log(req.session);
   if(req.query.lang){
     if(config.locales.indexOf(req.query.lang) != -1){
         if(req.session){

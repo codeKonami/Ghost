@@ -455,6 +455,11 @@ Post = ghostBookshelf.Model.extend({
             delete options.status;
         }
 
+        // Language filter
+        if(options.filter && options.filter.language){
+          options.where.statements.push({prop: 'language', op: '=', value: options.filter.language});
+        }
+
         return options;
     },
 

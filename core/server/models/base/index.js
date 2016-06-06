@@ -348,7 +348,6 @@ ghostBookshelf.Model = ghostBookshelf.Model.extend({
         }
         return itemCollection.fetchPage(options).then(function formatResponse(response) {
             var data = {};
-
             // re-add any computed properties that were stripped out before the call to fetchPage
             options.columns = allColumns;
             data[tableName] = response.collection.toJSON(options);
