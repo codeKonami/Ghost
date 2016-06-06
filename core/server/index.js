@@ -2,26 +2,29 @@
 // This file needs serious love & refactoring
 
 // Module dependencies
-var express     = require('express'),
-    hbs         = require('express-hbs'),
-    compress    = require('compression'),
-    uuid        = require('node-uuid'),
-    Promise     = require('bluebird'),
-    i18n        = require('./i18n'),
-    api         = require('./api'),
-    config      = require('./config'),
-    errors      = require('./errors'),
-    helpers     = require('./helpers'),
-    middleware  = require('./middleware'),
-    migrations  = require('./data/migration'),
-    models      = require('./models'),
-    permissions = require('./permissions'),
-    apps        = require('./apps'),
-    sitemap     = require('./data/xml/sitemap'),
-    xmlrpc      = require('./data/xml/xmlrpc'),
-    slack       = require('./data/slack'),
-    GhostServer = require('./ghost-server'),
-    validateThemes = require('./utils/validate-themes'),
+var express         = require('express'),
+    session         = require('express-session'),
+    hbs             = require('express-hbs'),
+    compress        = require('compression'),
+    uuid            = require('node-uuid'),
+    Promise         = require('bluebird'),
+    i18n            = require('./i18n'),
+    i18nFront       = require('i18n-2'),
+    acceptLanguage  = require('accept-language'),
+    api             = require('./api'),
+    config          = require('./config'),
+    errors          = require('./errors'),
+    helpers         = require('./helpers'),
+    middleware      = require('./middleware'),
+    migrations      = require('./data/migration'),
+    models          = require('./models'),
+    permissions     = require('./permissions'),
+    apps            = require('./apps'),
+    sitemap         = require('./data/xml/sitemap'),
+    xmlrpc          = require('./data/xml/xmlrpc'),
+    slack           = require('./data/slack'),
+    GhostServer     = require('./ghost-server'),
+    validateThemes  = require('./utils/validate-themes'),
 
     dbHash;
 
@@ -104,6 +107,13 @@ function init(options) {
             blogApp.use(compress());
         }
 
+        // ## Front i18n Configuration
+        acceptLanguage.languages(config.locales);
+        i18nFront.expressBind(blogApp, {locales: config.locales});
+        blogApp.use(session({ secret: config.secret || 'thisisasecret', resave: true, saveUninitialized: true }));
+        blogApp.use(require('./utils/lang'));
+        blogApp.use(function(req,res,next){blogApp.locals.lang = req.lang;next();});
+
         // ## View engine
         // set the view engine
         blogApp.set('view engine', 'hbs');
@@ -114,6 +124,7 @@ function init(options) {
 
         // Load helpers
         helpers.loadCoreHelpers(adminHbs);
+
 
         // ## Middleware and Routing
         middleware(blogApp, adminApp);

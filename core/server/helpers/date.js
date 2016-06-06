@@ -8,6 +8,7 @@ var moment          = require('moment-timezone'),
     timezone;
 
 date = function (date, options) {
+
     if (!options && date.hasOwnProperty('hash')) {
         options = date;
         date = undefined;
@@ -15,6 +16,9 @@ date = function (date, options) {
 
         // set to published_at by default, if it's available
         // otherwise, this will print the current date
+        if(options.data.root.lang){
+          moment.locale(options.data.root.lang);
+        }
         if (this.published_at) {
             date = moment(this.published_at).tz(timezone).format();
         }
@@ -22,7 +26,6 @@ date = function (date, options) {
 
     // ensure that context is undefined, not null, as that can cause errors
     date = date === null ? undefined : date;
-
     var f = options.hash.format || 'MMM DD, YYYY',
         timeago = options.hash.timeago,
         timeNow = moment().tz(timezone);
