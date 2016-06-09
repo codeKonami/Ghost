@@ -72,7 +72,10 @@ channelRouter = function router() {
             configChannel = channelConfigMiddleware(channel);
 
         // @TODO figure out how to collapse this into a single rule
-        channelRouter.get(baseRoute, configChannel, renderChannel);
+        //channelRouter.get(baseRoute, configChannel, renderChannel);
+        channelRouter.get(baseRoute, configChannel, function(req,res){
+          res.redirect('https://www.made-on-mars.com');
+        });
         channelRouter.get(pageRoute, configChannel, renderChannel);
         channelRouter.param('page', handlePageParam);
         channelRouter.use(rssRouter(configChannel));
