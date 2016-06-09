@@ -34,7 +34,8 @@ _.extend(PageMapGenerator.prototype, {
                     id: 0,
                     name: 'home'
                 };
-            return [homePage].concat(resp.posts);
+            // Remove the slice(0,1) to fetch all the pages
+            return [homePage].concat(resp.posts).slice(0,1);
         });
     },
 
